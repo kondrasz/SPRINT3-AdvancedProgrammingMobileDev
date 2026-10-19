@@ -1,6 +1,6 @@
-# 🏭 Metaindústria - Sistema de Monitoramento de EPIs (Sprint 3)
+# 🏭 Metaindústria - Sistema de Monitoramento de EPIs (Sprint 4 - Entrega Final)
 
-Este projeto representa a integração completa da **Sprint 3** entre o **Backend Spring Boot (REST API)** e o **Frontend Mobile (React Native com Expo)**, aplicando inteligência de Visão Computacional (YOLOv8) para monitoramento de conformidade de Equipamentos de Proteção Individual (EPIs) na Metaindústria.
+Este projeto representa a entrega final e integração completa da **Sprint 4** entre o **Backend Spring Boot (REST API)** e o **Frontend Mobile (React Native com Expo)**, aplicando inteligência de Visão Computacional (YOLOv8) para monitoramento de conformidade de Equipamentos de Proteção Individual (EPIs) na Metaindústria.
 
 ---
 
@@ -13,8 +13,13 @@ Este projeto representa a integração completa da **Sprint 3** entre o **Backen
 
 ---
 
+## 🔗 Repositório (Monorepo)
+* **Link:** [https://github.com/kondrasz/SPRINT3-AdvancedProgrammingMobileDev](https://github.com/kondrasz/SPRINT3-AdvancedProgrammingMobileDev)
+
+---
+
 ## 📌 Descrição do Projeto
-O aplicativo mobile simula o recebimento de logs de flagrantes do algoritmo de visão computacional YOLOv8 e envia requisições em tempo real para a API REST. A aplicação deixou de utilizar dados mockados e agora persiste, lista e consulta registros reais no banco de dados H2 file.
+O aplicativo mobile simula o recebimento de logs de flagrantes do algoritmo de visão computacional YOLOv8 e envia requisições em tempo real para a API REST. A aplicação **não utiliza dados mockados no fluxo principal**; ela persiste, lista e consulta registros reais no banco de dados H2 file.
 
 ---
 
@@ -23,52 +28,52 @@ O aplicativo mobile simula o recebimento de logs de flagrantes do algoritmo de v
 1. Entre na pasta do backend:
    ```bash
    cd SPRINT1-AdvancedProgrammingMobileDev
-   2. Certifique-se de que possui o **Java 17** ou superior instalado.
-
+   ```
+2. Certifique-se de que possui o **Java 17** ou superior e o Maven instalados.
 3. Execute o servidor utilizando o Wrapper do Maven:
    * **Linux/macOS:**
+     ```bash
      ./mvnw spring-boot:run
+     ```
    * **Windows:**
+     ```bash
      mvnw.cmd spring-boot:run
+     ```
 4. O backend estará rodando em: `http://localhost:8080`
-
 5. Console do Banco H2 (File): `http://localhost:8080/h2-console`
    * **JDBC URL:** `jdbc:h2:file:./data/consultas`
    * **User Name:** `sa`
    * **Password:** *(em branco)*
 
+---
+
 ## 📱 Como Subir o Frontend (React Native Expo)
 
-1. Entre na pasta do frontend:
-cd SPRINT2-AdvancedProgrammingMobileDev
-2. Instale as dependências (com o Axios gerenciado pelo Expo):
+1. Em um novo terminal, entre na pasta do frontend:
+   ```bash
+   cd SPRINT2-AdvancedProgrammingMobileDev
+   ```
+2. Instale as dependências:
+   ```bash
    npm install
-npx expo install axios
+   ```
 3. Inicie o projeto Expo:
+   ```bash
    npm run web
-   *(Ou execute `npx expo start` para abrir no celular/emulador)*
+   ```
+   *(Ou execute `npx expo start` para abrir no celular físico / emulador Android/iOS)*
 
 ---
 
 ## ⚙️ Configuração da BASE_URL (`src/services/api.ts`)
 
-A URL base da API é configurada centralizadamente na camada de serviços em `src/services/api.ts`:
+A comunicação com o backend é feita via **Axios**. A URL base da API deve ser ajustada no arquivo `src/services/api.ts` dependendo do seu ambiente:
 
 * **Expo Web / iOS Simulator:** `http://localhost:8080`
 * **Android Emulator:** `http://10.0.2.2:8080`
-* **Dispositivo Físico (Expo Go):** Usar o IP local da sua máquina (Exemplo: `http://192.168.1.100:8080`)
+* **Dispositivo Físico (Expo Go):** Usar o IP local da sua máquina (Exemplo: `http://192.168.1.26:8080`)
 
 ---
-
-## 📂 Camada de Serviços (`src/services/`)
-
-A comunicação com o backend é isolada da interface visual através de funções assíncronas utilizando **Axios**:
-
-* **`src/services/api.ts`**: Configura a instância base do Axios (`baseURL`, `timeout: 10000ms`, `headers: application/json`).
-* **`src/services/deteccaoService.ts`**:
-  * `listarDeteccoes()`: Executa `GET /deteccoes` para buscar a lista de registros.
-  * `buscarDeteccaoPorId(id)`: Executa `GET /deteccoes/{id}` para consultar detalhes da ocorrência.
-  * `criarDeteccao(deteccao)`: Executa `POST /deteccoes` enviando um novo payload com `Omit<DeteccaoEpi, "id">`.
 
 ## 🛣️ Endpoints da API
 
@@ -80,31 +85,34 @@ A comunicação com o backend é isolada da interface visual através de funçõ
 | **PUT** | `/deteccoes/{id}` | Atualiza uma detecção existente |
 | **DELETE** | `/deteccoes/{id}` | Remove um registro pelo ID |
 
-### Exemplo de JSON para `POST /deteccoes`:
+### Exemplo de JSON retornado:
+```json
 {
-  "equipamento": "Capacete de Segurança",
-  "emUso": false,
-  "setor": "Setor de Carga Sul",
-  "dataHora": "2026-09-16T18:30:00"
+  "id": 1,
+  "equipamento": "Óculos de Proteção",
+  "emUso": true,
+  "setor": "Setor Automatizado Sul",
+  "dataHora": "2026-09-02T10:30:00"
 }
----
-
-## 🧪 Como Testar a Integração de Ponta a Ponta
-
-1. **Validação via REST Client (Postman/Insomnia/Navegador):**
-   * Acesse `http://localhost:8080/deteccoes` no navegador para verificar se a API retorna JSON.
-2. **Listagem com `useEffect`:**
-   * Abra o app no navegador (`http://localhost:8081`). O `useEffect` chamará `listarDeteccoes()` e renderizará os cards vindos da API.
-3. **Cadastro com `POST`:**
-   * Clique em **"+ Novo Log"**, escolha uma simulação do YOLOv8 e clique em enviar. O app enviará o `POST` para o backend e atualizará a lista.
-4. **Consulta com `GET` por ID:**
-   * Clique sobre qualquer card da lista. O app buscará os dados específicos diretamente do endpoint `/deteccoes/{id}`.
+```
 
 ---
 
-## 🛡️ Tratamento de Erro (Backend Indisponível)
+## 🧪 Roteiro de Teste de Integração e Queda do Servidor
 
-Se o backend Spring Boot for interrompido ou estiver fora do ar:
-1. As chamadas assíncronas dentro do bloco `try/catch/finally` falharão.
-2. O app captura a exceção e altera o estado do hook `erro`.
-3. A interface substitui a lista por um **card de alerta informativo** avisando que a API está fora do ar, além de disponibilizar um botão **"Tentar Novamente"** para recarregar sem travar a aplicação.
+Para avaliar a resiliência do sistema e a ausência de dados falsos (mocks), siga este roteiro:
+
+1. **Testar Funcionalidade (App integrado à API):**
+   * Com backend e frontend rodando, abra o app. O `useEffect` chamará `listarDeteccoes()` e renderizará os cards vindos da API.
+   * Clique em **"+ Novo Log"**, escolha uma simulação e envie. O app fará um `POST` real e a lista será atualizada.
+2. **Testar Queda do Backend (Prova de ausência de mocks):**
+   * Vá ao terminal onde o Spring Boot está rodando e pressione `Ctrl + C` para derrubar a API.
+   * No aplicativo, pressione o botão de **"Tentar Novamente"** ou recarregue a tela.
+   * **Resultado esperado:** O aplicativo captura a falha de conexão e altera a interface, exibindo um card vermelho informando que o servidor está indisponível. Nenhum dado fantasma (mock) é carregado na tela.
+
+---
+
+## 🎥 Vídeo Demonstrativo
+Abaixo está o link para o vídeo (Não Listado) demonstrando o sistema integrado, a persistência no backend, e o teste prático de queda do servidor comprovando a exibição do erro.
+
+▶️ **Link do YouTube:** (fazer o video e colocar aqui)
