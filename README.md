@@ -115,4 +115,4 @@ Para avaliar a resiliência do sistema e a ausência de dados falsos (mocks), si
 ## 🎥 Vídeo Demonstrativo
 Abaixo está o link para o vídeo (Não Listado) demonstrando o sistema integrado, a persistência no backend, e o teste prático de queda do servidor comprovando a exibição do erro.
 
-▶️ **Link do YouTube:** (fazer o video e colocar aqui)
+▶️ **Link do YouTube:** [https://youtu.be/5JsbpL8l8Mk](https://youtu.be/5JsbpL8l8Mk)
